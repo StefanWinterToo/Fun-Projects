@@ -2,6 +2,10 @@ library("BatchGetSymbols")
 library("PerformanceAnalytics")
 library("quantmod")
 library("raster")
+library("extrafont")
+library("ggrepel")
+library("magrittr")
+
 
 container <- scrape.data()
 
@@ -58,5 +62,6 @@ for(i in 1:nrow(container)){
 for(i in 1:nrow(container)){
   container$arr[i] <- annualized_return(i)
 }
+
 
 
