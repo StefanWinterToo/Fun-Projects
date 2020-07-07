@@ -12,12 +12,6 @@ count = randint(0,1)
 print(count)
 counter2 = 1
 
-# Show GUI
-main = tk.Tk()
-main.title(player.get_player(count))
-main.geometry("250x250")
-saver.create_csv()
-
 def click():
     global count
     main.title(player.get_player(count))
@@ -57,6 +51,13 @@ def create_viz():
     main.destroy()
     os.system("Rscript Visualization.R")
     print("Created Viz")
+
+# Show GUI
+main = tk.Tk()
+main.title(player.get_player(count))
+main.geometry("250x250")
+saver.create_csv()
+
 
 button = Button(main, text = "Roll Dice", command = click)
 button.pack()
