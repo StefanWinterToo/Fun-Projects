@@ -5,7 +5,7 @@ def create_csv():
             writer = csv.writer(file)
             writer.writerow(["Name", "Face"])
 
-def write_csv(face):
+def write_csv(player, face):
     with open('data/results.csv', 'a') as outfile:
         writer = csv.writer(outfile)
-        writer.writerow(["Stefan", face])
+        writer.writerow([player, face])
