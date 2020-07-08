@@ -2,15 +2,12 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 import pandas as pd
 
-driver = webdriver.Chrome('/Users/stefanwinter/Documents/FindStox/Git/VIC/chromedriver')
-driver.get('https://valueinvestorsclub.com/ideas')
-
-def click_on_button():
+def click_on_button(driver):
     driver.implicitly_wait(2)
 
     i = 0
 
-    while i < 10:
+    while i < 3:
         i = i + 1
         driver.implicitly_wait(2)
         button = driver.find_elements_by_xpath('//*[@id="top"]/div[3]/div[2]/div[1]/a')[0]

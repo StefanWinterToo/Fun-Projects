@@ -1,14 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 import pandas as pd
+import re
 
-driver = webdriver.Chrome('/Users/stefanwinter/Documents/FindStox/Git/VIC/chromedriver')
-driver.get('https://valueinvestorsclub.com/ideas')
 
-# Extract Information
-## Only extract Idea, price and market cap:
-### user_id = driver.find_elements_by_xpath('//div[@class="col-xs-10 top"]')
-driver.implicitly_wait(2)
-html_body = driver.find_elements_by_xpath('//*[(@id = "ideas_body")]')
 
-data = str(html_body[0].text)
+def extract_user(l):
+    user_position = []
+    for i in range(len(l)):
+        if "BY" in l[i]:
+            user_position.append(i)
+    print([l[i] for i in user_position])
+    print(l)
+    print("success")
+
+l = []
+l = scrape_site()
+print(l)
+#extract_user(list)
