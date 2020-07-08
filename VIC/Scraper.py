@@ -1,20 +1,18 @@
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
 import pandas as pd
 import re
 
 
+file = open("vic.txt", "r")
+data = file.read()
+file.close()
+data = data.split("\n")
 
 def extract_user(l):
     user_position = []
     for i in range(len(l)):
         if "BY" in l[i]:
             user_position.append(i)
-    print([l[i] for i in user_position])
-    print(l)
-    print("success")
+    return([l[i] for i in user_position])
 
-l = []
-l = scrape_site()
-print(l)
-#extract_user(list)
+user_list = extract_user(data)
+print(user_list)
