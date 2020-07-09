@@ -45,4 +45,8 @@ df = create_dataframe(user_list)
 company_list = extract_company(data)
 df = append_company_dataframe(company_list, df)
 
+# Extract Mcap
+df["Mcap"] = df["Company"].str.extract('((((\$|€)\d*(,|.)\d*\w*)))')[0]
+df["Price"] = df["Company"].str.extract('(?<=\•)(.*?)\•')
+df["Company"] = df["Company"].str.extract('^(.+?)•')
 print(df)

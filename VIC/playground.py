@@ -40,7 +40,6 @@ def append_company_dataframe(l, df):
 
     for i in l:
         company.append(data[i])
-
     df["Company"] = company
     return(df)
 
