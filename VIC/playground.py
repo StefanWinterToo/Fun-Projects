@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from itertools import combinations
+import re
 
 #%%
 file = open("vic.txt", "r")
@@ -18,18 +19,16 @@ def extract_user(l):
 
 user_list = extract_user(data)
 
-# %%
-df = pd.DataFrame(user_list,columns=["Author"])
-#Which user wrote a short idea
-short_position = list(df[df["Author"].str.contains("Short")].index.array)
-
+#%%
+regex = re.compile(r'\w{*}(•)')
+selected_files = list(filter(regex.search, data))
 
 # %%
-df["LongShort"] = "long"
-df.loc[short_position,"LongShort"] = "short"
+company_position = []
+for i in range(len(data)):
+    if bool(re.search("•\s*\w*.\w*\s*•", data[i])):
+        company_position.append(i)
 
 # %%
-df["Author"] = df["Author"].str.extract('BY (.*)')
-df["Author"] = df["Author"].str.extract('^([\w\-]+)')
-
-# %%
+company = list(data[i] for i in company_position)
+df["Company"] = company
