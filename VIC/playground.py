@@ -20,4 +20,16 @@ user_list = extract_user(data)
 
 # %%
 df = pd.DataFrame(user_list,columns=["Author"])
-list(df[df["Author"].str.contains("Short")].index.array)
+#Which user wrote a short idea
+short_position = list(df[df["Author"].str.contains("Short")].index.array)
+
+
+# %%
+df["LongShort"] = "long"
+df.loc[short_position,"LongShort"] = "short"
+
+# %%
+df["Author"] = df["Author"].str.extract('BY (.*)')
+df["Author"] = df["Author"].str.extract('^([\w\-]+)')
+
+# %%
