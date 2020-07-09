@@ -38,6 +38,12 @@ def append_company_dataframe(list, df):
         company.append(data[i])
 
     df["Company"] = company
+    df["Mcap"] = df["Company"].str.extract('((((\$|€)\d*(,|.)\d*\w*)))')[0]
+    df["Price"] = df["Company"].str.extract('(?<=\•)(.*?)\•')
+    df["Company"] = df["Company"].str.extract('^(.+?)•')
+    df["Ticker"] = df["Company"].str.extract('(\w+|\w+\.\w+)\W*$')
+    for i in range(len(df)):
+        df["Company"][i] = re.sub(r'(\w+|\w+\.\w+)\W*$',' ',df["Company"][i])
     return(df)
 
 user_list = extract_user(data)
@@ -45,8 +51,5 @@ df = create_dataframe(user_list)
 company_list = extract_company(data)
 df = append_company_dataframe(company_list, df)
 
-# Extract Mcap
-df["Mcap"] = df["Company"].str.extract('((((\$|€)\d*(,|.)\d*\w*)))')[0]
-df["Price"] = df["Company"].str.extract('(?<=\•)(.*?)\•')
-df["Company"] = df["Company"].str.extract('^(.+?)•')
+
 print(df)
