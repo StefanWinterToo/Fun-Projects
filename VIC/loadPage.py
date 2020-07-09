@@ -6,7 +6,7 @@ def load():
     driver = webdriver.Chrome('/Users/stefanwinter/Documents/FindStox/Git/VIC/chromedriver')
     driver.get('https://valueinvestorsclub.com/ideas')
 
-    driver.implicitly_wait(5)
+    driver.implicitly_wait(2)
 
     html_body = driver.find_elements_by_xpath('//*[(@id = "ideas_body")]')
 
