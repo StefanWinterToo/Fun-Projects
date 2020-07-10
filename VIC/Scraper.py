@@ -44,6 +44,14 @@ def append_company_dataframe(list, df):
     df["Ticker"] = df["Company"].str.extract('(\w+|\w+\.\w+)\W*$')
     for i in range(len(df)):
         df["Company"][i] = re.sub(r'(\w+|\w+\.\w+)\W*$',' ',df["Company"][i])
+    df["Price"] = pd.to_numeric(df["Price"].str.strip().str.replace(',',''))
+    df["Author"] = df["Author"].str.strip()
+    df["Company"] = df["Company"].str.strip()
+    df["Ticker"] = df["Ticker"].str.strip()
+    df["Mcap"] = df["Mcap"].str.replace('mn', ',000,000')
+    for i in range(len(df)):
+        df["Mcap"][i] = re.sub(r'(\D)','', df["Mcap"][i])
+    df["Mcap"] = pd.to_numeric(df["Mcap"])
     return(df)
 
 user_list = extract_user(data)
