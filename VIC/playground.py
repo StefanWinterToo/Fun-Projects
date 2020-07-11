@@ -55,3 +55,9 @@ company_list = extract_company(data)
 append_company_dataframe(company_list, df)
 
 # %%
+df
+days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+for i in range(len(data)):
+    if bool(re.search("•\s*\w*(.|,)*\w*\s*•", data[i])):
+        if any(day in data[i-1] for day in days):
+            print(data[i-1])

@@ -7,7 +7,7 @@ def click_on_button(driver):
 
     i = 0
 
-    while i < 2:
+    while i < 30:
         i = i + 1
         driver.implicitly_wait(2)
         button = driver.find_elements_by_xpath('//*[@id="top"]/div[3]/div[2]/div[1]/a')[0]
