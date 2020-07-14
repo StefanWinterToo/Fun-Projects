@@ -26,6 +26,7 @@ def create_dataframe(user_list):
     df.loc[short_position,"LongShort"] = "short"
     df["Author"] = df["Author"].str.extract('BY (.*)')
     df["Author"] = df["Author"].str.extract('^([\w\-]+)')
+    df = df[df["Author"].isna() == False]
     return(df)
 
 def extract_company(l):
@@ -52,12 +53,36 @@ def append_company_dataframe(l, df):
 user_list = extract_user(data)
 df = create_dataframe(user_list)
 company_list = extract_company(data)
-append_company_dataframe(company_list, df)
+df = append_company_dataframe(company_list, df)
 
 # %%
-df
 days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+df["Date"] = ""
+
+
+
 for i in range(len(data)):
     if bool(re.search("•\s*\w*(.|,)*\w*\s*•", data[i])):
-        if any(day in data[i-1] for day in days):
-            print(data[i-1])
+        if any(day in data[i-1] for day in days) == True:
+            foo_list_company = []
+            foo_list_company.append(data[i])
+            #if(any(x in foo_list for x in company_list)):
+                #print(i)
+            foo_list_date = []
+            foo_list_date.append(data[i-1])
+            #print(data[i-1])
+
+            foo = {"Company": foo_list_company, "Date": foo_list_date} 
+
+            c_df = pd.DataFrame(foo)
+            #c_df["Date"] = foo_list_date
+            c_df["Mcap"] = c_df["Company"].str.extract('((((\$|€)\d*(,|.)\d*\w*)))')[0]
+            c_df["Price"] = c_df["Company"].str.extract('(?<=\•)(.*?)\•')
+            c_df["Company"] = c_df["Company"].str.extract('^(.+?)•')
+            c_df["Ticker"] = c_df["Company"].str.extract('(\w+|\w+\.\w+)\W*$')
+            print(c_df)
+            
+            
+            
+            
+# %%
