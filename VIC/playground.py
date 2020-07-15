@@ -59,8 +59,6 @@ df = append_company_dataframe(company_list, df)
 days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
 df["Date"] = ""
 
-
-
 for i in range(len(data)):
     if bool(re.search("•\s*\w*(.|,)*\w*\s*•", data[i])):
         if any(day in data[i-1] for day in days) == True:
@@ -77,10 +75,15 @@ for i in range(len(data)):
             c_df = pd.DataFrame(foo)
             #c_df["Date"] = foo_list_date
             c_df["Mcap"] = c_df["Company"].str.extract('((((\$|€)\d*(,|.)\d*\w*)))')[0]
+            c_df["Mcap"] = c_df["Mcap"][0]
             c_df["Price"] = c_df["Company"].str.extract('(?<=\•)(.*?)\•')
+            c_df["Price"] = c_df["Price"][0]
             c_df["Company"] = c_df["Company"].str.extract('^(.+?)•')
+            c_df["Company"] = c_df["Company"][0]
             c_df["Ticker"] = c_df["Company"].str.extract('(\w+|\w+\.\w+)\W*$')
-            print(c_df)
+            c_df["Ticker"] = c_df["Ticker"][0]
+            #print(df.where(df["Ticker"]==c_df["Ticker"][0]))
+            print(type(c_df["Ticker"]))
             
             
             
