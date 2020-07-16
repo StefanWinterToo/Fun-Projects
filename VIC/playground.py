@@ -13,7 +13,7 @@ data = data.split("\n")
 def extract_user(l):
     user_position = []
     for i in range(len(l)):
-        if "BY" in l[i]:
+        if bool(re.search("^BY ", l[i])):
             user_position.append(i)
     return([l[i] for i in user_position])
 
@@ -33,7 +33,9 @@ def extract_company(l):
     company_position = []
     for i in range(len(l)):
         if bool(re.search("•\s*\w*(.|,)*\w*\s*•", l[i])):
-            company_position.append(i)
+            if bool(re.search("^((?!Short Idea).)*$", l[i])):
+                # Excludes wrongly extracted users (BY pcm983 • Short Idea • Reactivate)
+                company_position.append(i)
     return(company_position)
 
 def append_company_dataframe(l, df):
@@ -43,12 +45,15 @@ def append_company_dataframe(l, df):
         company.append(data[i])
     df["Company"] = company
     df["Mcap"] = df["Company"].str.extract('((((\$|€)\d*(,|.)\d*\w*)))')[0]
-    df["Price"] = df["Company"].str.extract('(?<=\•)(.*?)\•')
     df["Company"] = df["Company"].str.extract('^(.+?)•')
+    df["Price"] = df["Company"].str.extract('(?<=\•)(.*?)\•')
     df["Ticker"] = df["Company"].str.extract('(\w+|\w+\.\w+)\W*$')
     for i in range(len(df)):
         df["Company"][i] = re.sub(r'(\w+|\w+\.\w+)\W*$',' ',df["Company"][i])
     return(df)
+
+def replace_mcap(df):
+    df["Mcap"] = df["Mcap"].str.replace('mn', ',000,000')
 
 user_list = extract_user(data)
 df = create_dataframe(user_list)
