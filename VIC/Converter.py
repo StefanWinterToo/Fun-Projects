@@ -4,7 +4,7 @@ from itertools import combinations
 import re
 from datetime import datetime
 
-file = open("vic.txt", "r")
+file = open("data/vic.txt", "r")
 data = file.read()
 file.close()
 data = data.split("\n")
@@ -16,6 +16,15 @@ def extract_user(l):
             user_position.append(i)
     return([l[i] for i in user_position])
 
+def extract_company(l):
+    company_position = []
+    for i in range(len(l)):
+        if bool(re.search("•\s*\w*(.|,)*\w*\s*•", l[i])):
+            if bool(re.search("^((?!Short Idea).)*$", l[i])):
+                # Excludes wrongly extracted users (BY pcm983 • Short Idea • Reactivate)
+                company_position.append(i)
+    return(company_position)
+
 def create_dataframe(user_list):
     df = pd.DataFrame(user_list,columns=["Author"])
     #Which user wrote a short idea
@@ -26,16 +35,6 @@ def create_dataframe(user_list):
     df["Author"] = df["Author"].str.extract('^([\w\-]+)')
     df = df[df["Author"].isna() == False]
     return(df)
-
-def extract_company(l):
-    company_position = []
-    for i in range(len(l)):
-        if bool(re.search("•\s*\w*(.|,)*\w*\s*•", l[i])):
-            if bool(re.search("^((?!Short Idea).)*$", l[i])):
-                # Excludes wrongly extracted users (BY pcm983 • Short Idea • Reactivate)
-                company_position.append(i)
-    return(company_position)
-
 
 def append_company_dataframe(l, df):
     company = []
@@ -63,7 +62,6 @@ def append_company_dataframe(l, df):
 
 def replace_mcap(df):
     df["Mcap"] = df["Mcap"].str.replace('mn', ',000,000')
-
 
 user_list = extract_user(data)
 df = create_dataframe(user_list)

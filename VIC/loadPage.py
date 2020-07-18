@@ -20,7 +20,7 @@ def load():
 
     print("###########")
     print(html_body[0].text)
-    with open("vic.txt", "w") as file:
+    with open("data/vic.txt", "w") as file:
         file.write(html_body[0].text)
     print("Saved Text")
     
