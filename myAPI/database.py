@@ -2,9 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 # app.config['SQLALCHEMY_ECHO'] = True
+
 
 # Change settings.json to
 # {
@@ -24,16 +26,21 @@ class Person(db.Model):
     #    return '<Person %r>' % self.username
 
 # When running for the first time:
-db.create_all()
+# db.create_all()
 
-admin = Person()
-admin.id = 2
-admin.username = "Peter"
-admin.age = 99
+# Block Comment: shift + alt + a
+""" admin = Person()
+admin.username = "Stefan"
+admin.age = 25
 db.session.add(admin)
+# Commit adds an id
+db.session.commit() """
 
-db.session.commit()
+stefan = Person.query.filter_by(username = "Stefan").first()
+print(stefan.id)
+print(stefan.username)
+print(stefan.age)
+
 db.session.close()
 
 
-Person.query.all()
