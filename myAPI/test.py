@@ -7,5 +7,16 @@ print(response.json())
 input()
 response = requests.get(BASE + "person/Fredi")
 print(response.json()) """
-response = requests.get(BASE + "person/Fredi")
+
+# response = requests.get(BASE + "person/Fredi")
+# print(response.json())
+
+data = [{'username': "Stefan", 'age': 25}]
+
+for i in range(len(data)):
+    response = requests.put(BASE + "person/" + str[i], data[i])
+    print(response.json())
+
+input()
+response = requests.get(BASE + "person/0")
 print(response.json())

@@ -15,6 +15,9 @@ db = SQLAlchemy(app)
 #    ]
 # }
 
+# When running for the first time:
+db.create_all()
+
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(120))
@@ -22,20 +25,16 @@ class Person(db.Model):
 
     # Returns printable version of object
     #def __repr__(self):
-    #    return '<Person %r>' % self.username
+    #    return f"Person(name={name})"
 
-
-
-# When running for the first time:
-# db.create_all()
 
 # Block Comment: shift + alt + a
-""" admin = Person()
+admin = Person()
 admin.username = "Stefan"
 admin.age = 25
 db.session.add(admin)
 # Commit adds an id
-db.session.commit() """
+db.session.commit()
 
 # Query database
 """ stefan = Person.query.filter_by(username = "Stefan").first()
@@ -43,13 +42,12 @@ print(stefan.id)
 print(stefan.username)
 print(stefan.age) """
 
-
 records = Person.query.all()
 
 for record in records:
-    #print(record.username)
+    print(record.username)
     #print(record.__dict__['username'])
     #print(f"<id={record.id}, username={record.username}, age = {record.age}>")
-    print("")
+    #print("")
 
 db.session.close()
