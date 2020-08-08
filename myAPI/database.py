@@ -32,7 +32,7 @@ class PersonModel(db.Model):
 class PersonSchema(ma.Schema):
     class Meta:
         # Which fields do we want to expose?
-        fields = ("username", "age")
+        fields = ("sername", "age")
 
 # When running for the first time:
 db.drop_all()

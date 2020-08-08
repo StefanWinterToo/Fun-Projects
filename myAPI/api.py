@@ -15,6 +15,7 @@ persons_schema = PersonSchema(many=True)
 """
 
 resource_fields = {
+    'id': fields.Integer,
 	'username': fields.String,
 	'age': fields.Integer,
 }
