@@ -1,10 +1,13 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+import pandas as pd
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
+ma = Marshmallow(app)
 # app.config['SQLALCHEMY_ECHO'] = True
 
 # Change settings.json to
@@ -15,39 +18,46 @@ db = SQLAlchemy(app)
 #    ]
 # }
 
-# When running for the first time:
-db.create_all()
-
-class Person(db.Model):
+class PersonModel(db.Model):
+    __tablename__ = "PersonModel"
     id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(120))
+    username = db.Column(db.String(255))
     age = db.Column(db.Integer)
 
     # Returns printable version of object
-    #def __repr__(self):
-    #    return f"Person(name={name})"
+    def __repr__(self):
+        return '<PersonModel %s>' % self.username
 
+# Marshmallow serializes the data
+class PersonSchema(ma.Schema):
+    class Meta:
+        # Which fields do we want to expose?
+        fields = ("username", "age")
 
+# When running for the first time:
+db.drop_all()
+db.create_all()
+
+# Creates objects of PersonModel and ads to database
+"""
 # Block Comment: shift + alt + a
-admin = Person()
-admin.username = "Stefan"
-admin.age = 25
+admin = PersonModel(username="Stefan", age=25)
+dev = PersonModel(username="Hans",age=36)
 db.session.add(admin)
+db.session.add(dev)
 # Commit adds an id
-db.session.commit()
+db.session.commit() 
+"""
+
+# Converts dataframe to objects and ads to database
+data = {'username': ['Stefan', 'Maxi'], 'age': [25, 65]}
+df = pd .DataFrame(data)
+df.to_sql(name='PersonModel', con=db.engine, index=False, if_exists='append')
 
 # Query database
-""" stefan = Person.query.filter_by(username = "Stefan").first()
+""" stefan = PersonModel.query.filter_by(username = "Stefan").first()
 print(stefan.id)
 print(stefan.username)
 print(stefan.age) """
-
-records = Person.query.all()
-
-for record in records:
-    print(record.username)
-    #print(record.__dict__['username'])
-    #print(f"<id={record.id}, username={record.username}, age = {record.age}>")
-    #print("")
 
 db.session.close()
