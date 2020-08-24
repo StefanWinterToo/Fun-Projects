@@ -4,10 +4,12 @@ from itertools import combinations
 import re
 from datetime import datetime
 
-file = open("data/vic.txt", "r")
-data = file.read()
-file.close()
-data = data.split("\n")
+def open_file():
+    file = open("data/vic.txt", "r")
+    data = file.read()
+    file.close()
+    data = data.split("\n")
+    return(data)
 
 def extract_user(l):
     user_position = []
@@ -21,7 +23,7 @@ def extract_company(l):
     for i in range(len(l)):
         if bool(re.search("•\s*\w*(.|,)*\w*\s*•", l[i])):
             if bool(re.search("^((?!Short Idea).)*$", l[i])):
-                # Excludes wrongly extracted users (BY pcm983 • Short Idea • Reactivate)
+                # Excludes wrongly extracted users (BY pcm983 (d• Short Idea • Reactivate)
                 company_position.append(i)
     return(company_position)
 
@@ -36,7 +38,7 @@ def create_dataframe(user_list):
     df = df[df["Author"].isna() == False]
     return(df)
 
-def append_company_dataframe(l, df):
+def append_company_dataframe(l, df, data):
     company = []
     foo_list_date = []
     days = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
@@ -63,10 +65,13 @@ def append_company_dataframe(l, df):
 def replace_mcap(df):
     df["Mcap"] = df["Mcap"].str.replace('mn', ',000,000')
 
+"""
+data = open_file()
 user_list = extract_user(data)
 df = create_dataframe(user_list)
 company_list = extract_company(data)
-df = append_company_dataframe(company_list, df)
+df = append_company_dataframe(company_list, df, data)
 replace_mcap(df)
 
 print(df)
+"""
