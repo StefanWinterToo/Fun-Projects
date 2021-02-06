@@ -1,0 +1,113 @@
+---
+title: "Airline Share Buybacks"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(scales)
+```
+
+## R Markdown
+
+Due to the current bailout of the airline industry, the biggest carriers had to face criticism for their share buybacks over recent years. Even though share buybacks are an essential part of capital markets, this post won't be a discussion whether buybacks are right or wrong.
+Instead, this post uses the fantastic data Intrinio provides to look at how big those buybacks actually were. If you are interested in more data driven research, check out my blog at findstox.com.
+
+I used the Intrinio API in R, to access all the data. Using the API is very straight forward, as you only need to plug in your api key
+
+```{r include=FALSE}
+tag <- "weightedavedilutedsharesos"
+delta <- load_data("DAL", tag)
+delta$stock <- "Delta"
+spirit <- load_data("SAVE", tag)
+spirit$stock <- "Spirit"
+southwest <- load_data("LUV", tag)
+southwest$stock <- "Southwest"
+american <- load_data("AAL", tag)
+american$stock <- "American"
+united <- load_data("UAL", tag)
+united$stock <- "United"
+
+airlines <- rbind(delta, spirit, southwest, american, united)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+ggplot(data = airlines, aes(x = date, y = value, colour = stock)) +
+  geom_line(linetype = "longdash") +
+  geom_point() +
+  scale_x_date(date_labels="%Y", date_breaks  = "1 year") +
+  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE), breaks = scales::pretty_breaks()) +
+  xlab("") +
+  ylab("") +
+  scale_colour_manual(values = c("#01B8AA", "#374649", "#FD625E", "#F2C80F", "#5F6B6D")) +
+  theme_minimal()
+  facet_grid(stock ~ ., scales = "free")
+```
+
+
+```{r pressure, echo=FALSE}
+ggplot(data = airlines, aes(x = date, y = value, colour = stock)) +
+  geom_line(linetype = "longdash") +
+  geom_point() +
+  scale_x_date(date_labels="%Y", date_breaks  = "1 year") +
+  scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE), breaks = scales::pretty_breaks()) +
+  xlab("") +
+  ylab("") +
+  scale_colour_manual(values = c("#01B8AA", "#374649", "#FD625E", "#F2C80F", "#5F6B6D")) +
+  theme_minimal() +
+  facet_grid(stock ~ ., scales = "free")
+```
+
+YoY change:
+
+```{r}
+airlines <- airlines %>%
+  arrange(date) %>%
+  group_by(stock) %>%
+  mutate(lag = lag(value)) %>%
+  ungroup()
+
+airlines <- airlines %>%
+  group_by(stock) %>%
+  mutate(YoY = as.numeric((value-lag)/lag))
+```
+
+
+```{r}
+airlines %>%
+  filter(date > "2009-01-01") %>%
+  filter(!is.na(YoY)) %>%
+  ggplot(aes(x = factor(date), y = YoY, fill = stock)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  # geom_label(aes(label = YoY, hjust = 0, vjust = 0.4), size = 2) +
+  #scale_x_date(date_labels="%Y", date_breaks  = "1 year") +
+  #scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
+  xlab("") +
+  ylab("") +
+  scale_fill_manual(values = c("#01B8AA", "#374649", "#FD625E", "#F2C80F", "#5F6B6D")) +
+  theme_minimal() +
+  coord_flip()
+```
+
+```{r}
+airlines %>%
+  filter(date > "2014-01-01") %>%
+  filter(!is.na(YoY)) %>%
+  filter(YoY < 0) %>%
+  ggplot(aes(x = factor(date), y = YoY, fill = stock)) +
+  geom_col(position = position_dodge(), width = 0.7) +
+  # geom_label(aes(label = YoY, hjust = 0, vjust = 0.4), size = 2) +
+  #scale_x_date(date_labels="%Y", date_breaks  = "1 year") +
+  #scale_y_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE)) +
+  xlab("") +
+  ylab("") +
+  scale_fill_manual(values = c("#01B8AA", "#374649", "#FD625E", "#F2C80F", "#5F6B6D")) +
+  theme_minimal() +
+  coord_flip()
+```
